@@ -8,12 +8,15 @@ let state = {
     processed: [],
     start: 0,
     end: arr.length - 1,
-    inProcess: true,
+    inProcess: false,
     found: null
 };
 
 function start (e) {
     e.preventDefault();
+    if (state.inProcess) {
+        return;
+    }
     state = {
         step: 0,
         current: null,
@@ -28,51 +31,79 @@ function start (e) {
     return false;
 }
 
-function binarySearchAsync (arr, item) {
-    function doStep () {
-        console.log('doStep ---');
-        state.step++;
-        let middle = Math.floor((state.start + state.end) / 2);
-        state.current = middle;
-        console.log('arr = ', arr.slice(state.start, state.end + 1));
-        console.log('middle = ', middle);
-        if (item === arr[middle]) {
-            console.log('found, index is: ', middle);
-            console.log('iteration № ', state.step);
-            state.inProcess = false;
-            state.found = middle;
+async function binarySearchAsync (arr, item) {
+    let middle;
+    state.inProcess = true;
+    const setPointer = () => new Promise((resolve) => {
+        setTimeout(() => {
+            middle = Math.floor((state.start + state.end) / 2);
+            state.current = middle;
+            console.log('setPointer');
             render();
-            return arr[middle];
-        } else if (item < arr[middle]) {
-            console.log('less');
-            state.processed.push(middle);
-            state.end = middle - 1;
-        } else if (item > arr[middle]) {
-            console.log('bigger');
-            state.processed.push(middle);
+            resolve();
+        }, 1000);
+    });
+
+    const trimStart = () => new Promise((resolve) => {
+        setTimeout(() => {
             state.start = middle + 1;
-        }
-        if (state.start > state.end) {
-            state.inProcess = false;
-            console.log('not found');
-            console.log('iteration № ', state.step);
             render();
-            return undefined;
-        }
-        render();
-    }
+            resolve();
+        }, 1000);
+    });
+
+    const trimEnd = () => new Promise((resolve) => {
+        setTimeout(() => {
+            state.end = middle - 1;
+            render();
+            resolve();
+        }, 1000);
+    });
+
+    const checkItem = () => new Promise((resolve) => {
+        setTimeout(async () => {
+            if (item === arr[middle]) {
+                console.log('found, index is: ', middle);
+                console.log('iteration № ', state.step);
+                state.inProcess = false;
+                state.found = middle;
+                render();
+                resolve(arr[middle]);
+            } else if (item < arr[middle]) {
+                console.log('less');
+                state.processed.push(middle);
+                render();
+                await trimEnd();
+                resolve();
+            } else if (item > arr[middle]) {
+                console.log('bigger');
+                state.processed.push(middle);
+                render();
+                await trimStart();
+                resolve();
+            }
+            if (state.start > state.end) {
+                state.inProcess = false;
+                console.log('not found');
+                console.log('iteration № ', state.step);
+                render();
+                resolve(undefined);
+            }
+        }, 1000);
+    });
+
+    const doStep = () => new Promise(async (resolve) => {
+        state.step++;
+        await setPointer();
+        await checkItem();
+        resolve();
+    });
 
     render();
-    setTimeout(doStep, state.step === 0 ? 1000 : 0);
-    if (!state.inProcess) {
-        return;
-    }
-    setTimeout(function() {
-        if (state.inProcess) {
-            binarySearchAsync(arr, item);
-        }
-    }, state.step === 0 ? 2000 : 1000);
 
+    while (state.inProcess) {
+        await doStep();
+    }
 }
 
 function render () {
@@ -88,7 +119,7 @@ function render () {
             elem.classList.add('current');
         }
         if (state.processed.includes(i)) {
-            elem.classList.add('current');
+            elem.classList.add('processed');
         }
         
         if (i === state.found) {
