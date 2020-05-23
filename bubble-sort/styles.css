@@ -1,0 +1,29 @@
+* {
+    box-sizing: border-box;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.item {
+    width: 44px;
+    height: 44px;
+    line-height: 44px;
+    background-color: #ddd;
+    margin: 8px;
+    text-align: center;
+}
+
+.right {
+    background-color: green;
+}
+
+.wrong {
+    background-color: red;
+}
+
+.current {
+    border: 2px solid black;
+}
