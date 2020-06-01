@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Algorithms</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="section">
+        <div>Binary Search:</div>
+        <form action="" onsubmit="return binarySearch.start(event)">
+            <input type="number" value="7">
+            <input type="submit" value="find">
+        </form>
+        <div id="container__binary-search" class="container"></div>
+    </div>
+
+    <div class="section">
+        <div>Bubble Sort:</div>
+        <div>
+            step delay, ms: <input id="delay" type="number" value="500">
+        </div>
+        <button onclick="bubbleSort.start()">Start Sort</button>
+        <button onclick="bubbleSort.shuffle()">Shuffle array</button>
+        <div id="container__bubble-sort" class="container"></div>
+    </div>
+
+
+    <script src="binary-search/main.js"></script>
+    <script src="bubble-sort/main.js"></script>
+</body>
+</html>

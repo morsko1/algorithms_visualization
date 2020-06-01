@@ -1,7 +1,7 @@
 class BinarySearch {
     constructor(array) {
         this.array = array;
-        this.container = document.getElementById('container');
+        this.container = document.getElementById('container__binary-search');
         this.state = {
             step: 0,
             current: null,

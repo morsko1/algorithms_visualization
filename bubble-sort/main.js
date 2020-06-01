@@ -1,7 +1,7 @@
 class BubbleSort {
     constructor(array) {
         this.array = array;
-        this.container = document.getElementById('container');
+        this.container = document.getElementById('container__bubble-sort');
         this.state = {
             current: null,
             isDone: false,
@@ -111,7 +111,8 @@ class BubbleSort {
     }
 }
 
-const arr = Array.from(new Array(10), (x, i) => i + 1);
-arr.sort((a, b) => Math.random() - 0.5);
+// const arr = Array.from(new Array(10), (x, i) => i + 1);
+// arr.sort((a, b) => Math.random() - 0.5);
 
-let bubbleSort = new BubbleSort(arr);
+// let bubbleSort = new BubbleSort(arr);
+let bubbleSort = new BubbleSort(Array.from(new Array(10), (x, i) => i + 1).sort((a, b) => Math.random() - 0.5));
